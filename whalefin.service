@@ -1,0 +1,10 @@
+[Unit]
+Description=Whalefin Login Manager
+After=systemd-user-sessions.service
+
+[Service]
+ExecStart=whalefin
+Restart=always
+
+[Install]
+Alias=display-manager.service
