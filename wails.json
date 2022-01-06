@@ -1,0 +1,21 @@
+{
+  "name": "whalefin",
+  "assetdir": "frontend/build",
+  "frontend:build": "npm run build",
+  "frontend:install": "npm install",
+  "frontend:dev": "",
+  "wailsjsdir": "./frontend",
+  "version": "2.0.0",
+  "Path": "",
+  "BuildDir": "",
+  "outputfilename": "whalefin",
+  "OutputType": "",
+  "Platform": "",
+  "Author": {
+    "name": "",
+    "email": ""
+  },
+  "debounceMS": 100,
+  "devserverurl": "http://localhost:34115",
+  "appargs": ""
+}

@@ -32,45 +32,33 @@ func main() {
 		xPID = xorg.StartX()
 		defer xorg.StopX(xPID)
 	}
+	app := NewApp()
 	go func() {
 		for {
 			<-sig
 			if xPID != 0 {
 				xorg.StopX(xPID)
 			}
-			f.r.Window.Close()
+			app.Show()
+			app.Close()
 		}
 	}()
 
 	// run blocking wails here
 	width, height := getScreenResolution()
-
-	app := NewApp()
 	err := wails.Run(&options.App{
 		Assets:     assets,
-		Title:      "My App",
-		Width:      800,
-		Height:     600,
+		Title:      "whalefin",
+		Width:      int(width),
+		Height:     int(height),
 		OnStartup:  app.startup,
 		OnShutdown: app.shutdown,
 		Bind: []interface{}{
 			app,
-			GetFullScreen(),
 		},
 	})
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	//	err := wails.Run(&options.App{
-	//		Width:  int(width),
-	//		Height: int(height),
-	//		Title:  "whalefin",
-	//		JS:     js,
-	//		CSS:    css,
 	//		Colour: "#0547b2",
-	//	})
-	//	app.Bind(GetFullScreen())
-	//	app.Bind(login)
-	//	app.Run()
 }

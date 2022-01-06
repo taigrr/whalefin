@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"github.com/taigrr/whalefin/pam"
-
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -25,11 +24,20 @@ func NewApp() *App {
 }
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+	a.Show()
 }
 func (a *App) shutdown(ctx context.Context) {
 }
-func (a *App) MakeFullScreen() {
+
+func (a *App) Close() {
+	runtime.Quit(a.ctx)
+}
+func (a *App) Show() {
+	runtime.WindowShow(a.ctx)
 	runtime.WindowFullscreen(a.ctx)
+}
+func (a *App) Hide() {
+	runtime.WindowHide(a.ctx)
 }
 
 func (a *App) Greet(name string) string {
@@ -57,13 +65,12 @@ func (a *App) Login(username, password, xsession string) error {
 		if err != nil {
 			fmt.Printf("Error launching login process: %v\n", err)
 			// make sure wails is visible
-			runtime.WindowShow(a.ctx)
-			runtime.WindowMaximise(a.ctx)
+			a.Show()
 			return
 		}
 
 		// hide wails
-		runtime.WindowHide(a.ctx)
+		a.Hide()
 		// xsession has begun, wait for it to exit before taking over
 		proc.Wait()
 
@@ -71,8 +78,7 @@ func (a *App) Login(username, password, xsession string) error {
 		// to be able to log in as a different user later
 		pam.Logout()
 		// show wails
-		runtime.WindowShow(a.ctx)
-		runtime.WindowMaximise(a.ctx)
+		a.Show()
 	}()
 	return nil
 }

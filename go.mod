@@ -2,13 +2,13 @@ module github.com/taigrr/whalefin
 
 go 1.17
 
+replace github.com/wailsapp/wails/v2 v2.0.0-beta.27 => ../wails/v2
+
 require (
 	github.com/BurntSushi/xgb v0.0.0-20201008132610-5f9e7b3c49cd
 	github.com/BurntSushi/xgbutil v0.0.0-20160919175755-f7c97cef3b4e
-	github.com/mitchellh/mapstructure v1.4.3
+	github.com/wailsapp/wails/v2 v2.0.0-beta.27
 )
-
-require github.com/wailsapp/wails/v2 v2.0.0-beta.27
 
 require (
 	github.com/andybalholm/brotli v1.0.2 // indirect
