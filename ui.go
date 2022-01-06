@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/wailsapp/wails"
+	"github.com/wailsapp/wails/v2"
 )
 
 var f FullScreen
@@ -22,6 +22,6 @@ func GetFullScreen() *FullScreen {
 // WailsInit is called when the component is being initialised
 func (f *FullScreen) WailsInit(runtime *wails.Runtime) error {
 	f.r = runtime
-	f.r.Window.Fullscreen()
+	//f.r.Window.Fullscreen()
 	return nil
 }

@@ -3,7 +3,7 @@ package main
 import (
 	"math/rand"
 
-	"github.com/wailsapp/wails"
+	"github.com/wailsapp/wails/v2"
 )
 
 // Counter is what we use for counting
