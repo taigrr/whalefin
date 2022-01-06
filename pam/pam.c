@@ -2,7 +2,7 @@
 // https://www.gulshansingh.com/posts/how-to-write-a-display-manager/
 // and is released under the MIT License.
 
-//TODO: reimplement this code from scratch using Go PAM: https://github.com/msteinert/pam
+//TODO: reimplement this code from scratch using Go PAM: https://github.com/msteinert/pamnn
 
 #include <security/pam_appl.h>
 #ifdef __FreeBSD__
@@ -147,11 +147,9 @@ bool login(const char *username, const char *password, const char *exec, pid_t *
 
     *child_pid = fork();
     if (*child_pid == 0) {
-		setuid(pw->pw_uid);
-		setgid(pw->pw_gid);
         chdir(pw->pw_dir);
 		char **env = pam_getenvlist(pam_handle);
-        execle(pw->pw_shell, pw->pw_shell, "-c", exec, NULL, env);
+        execle("/usr/bin/su", "/usr/bin/su", username, pw->pw_shell, "-c", exec, NULL, env);
         exit(1);
     }
     return true;
