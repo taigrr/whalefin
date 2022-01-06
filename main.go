@@ -54,6 +54,7 @@ func main() {
 		Colour: "#0547b2",
 	})
 	app.Bind(GetFullScreen())
+	app.Bind(login)
 	app.Run()
 	<-restartWails
 	//}
