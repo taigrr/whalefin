@@ -15,13 +15,24 @@ type xsession struct {
 	Exec string `json:"exec"`
 }
 
-var xinitrc = &xsession{
+var xinitrc = xsession{
 	Name: ".xinitrc",
 	Exec: "/bin/bash --login .xinitrc",
 }
 
+func getSession(name string) string {
+	sessions := loadSessions()
+	for _, session := range sessions {
+		if session.Name == name {
+			return session.Exec
+		}
+	}
+	return ""
+}
+
 // get a slice of all available xsessions
 func loadSessions() (list []xsession) {
+	list = []xsession{xinitrc}
 	for _, dir := range getXDGDirs() {
 		sessionDir := filepath.Join(dir, "xsessions")
 		// check to see if the directory exists first

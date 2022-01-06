@@ -28,6 +28,10 @@ func login(data map[string]interface{}) error {
 	if login.Password == "" {
 		return errors.New("Password cannot be empty!")
 	}
+	login.XSession = getSession(login.XSession)
+	if login.XSession == "" {
+		return errors.New("Invalid xsession provided!")
+	}
 	go func() {
 		pid, err := pam.Login(login.Username, login.Password, login.XSession)
 		if err != nil {
