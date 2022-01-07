@@ -32,10 +32,10 @@ static pam_handle_t *pam_handle;
 
 static void change_identity (struct passwd *pw) {
     if (initgroups(pw->pw_name, pw->pw_gid) == -1)
-        exit(1);
+        _Exit();
     endgrent();
     if (setgid(pw->pw_gid) || setuid(pw->pw_uid))
-        exit(1);
+        _Exit();
 }
 
 static int end(int last_result) {
@@ -159,7 +159,7 @@ bool login(const char *username, const char *password, const char *exec, pid_t *
         chdir(pw->pw_dir);
         char **env = pam_getenvlist(pam_handle);
         execle(pw->pw_shell, pw->pw_shell, "-c", exec, NULL, env);
-        exit(1);
+        _Exit();
     }
     return true;
 }
