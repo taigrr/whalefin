@@ -121,13 +121,13 @@ func getXDGDirs() (dirs []string) {
 		home, err := os.UserHomeDir()
 		if err == nil {
 			dataHome = filepath.Join(home, ".local/share")
+			dirs = []string{dataHome}
 		}
 	}
 	dataDirs := os.Getenv("XDG_DATA_DIRS")
 	if dataDirs == "" {
 		dataDirs = "/usr/local/share/:/usr/share/"
 	}
-	dirs = []string{dataHome}
 	dirs = append(dirs, strings.Split(dataDirs, ":")...)
 	return
 }
