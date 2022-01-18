@@ -117,13 +117,15 @@ func getXDGDirs() (dirs []string) {
 	// be taken into account at a lower precedence. If empty, assume it is
 	// "/usr/local/share/:/usr/share/"
 	dataHome := os.Getenv("XDG_DATA_HOME")
-	dirs = []string{dataHome}
+	var dirs = []string
 	if dataHome == "" {
 		home, err := os.UserHomeDir()
 		if err == nil {
 			dataHome = filepath.Join(home, ".local/share")
 			dirs = []string{dataHome}
 		}
+	} else {
+		dirs = []string{dataHome}
 	}
 	dataDirs := os.Getenv("XDG_DATA_DIRS")
 	if dataDirs == "" {
