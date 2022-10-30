@@ -81,13 +81,13 @@ func parseXSession(path string) (xsession, error) {
 		if strings.HasPrefix(line, "Name=") {
 			name := strings.Split(line, "=")
 			if len(name) == 1 {
-				return data, errors.New("Desktop Entry Name field is empty")
+				return data, errors.New("desktop entry name field is empty")
 			}
 			data.Name = name[1]
 		} else if strings.HasPrefix(line, "Exec=") {
 			exec := strings.Split(line, "=")
 			if len(exec) == 1 {
-				return data, errors.New("Desktop Entry Exec field is empty")
+				return data, errors.New("desktop entry exec field is empty")
 			}
 			data.Exec = exec[1]
 		}
@@ -97,10 +97,10 @@ func parseXSession(path string) (xsession, error) {
 		return data, err
 	}
 	if data.Exec == "" {
-		return data, errors.New("Desktop Entry Exec field is missing")
+		return data, errors.New("desktop entry exec field is missing")
 	}
 	if data.Name == "" {
-		return data, errors.New("Desktop Entry Name field is missing")
+		return data, errors.New("desktop entry name field is missing")
 	}
 	return data, nil
 }

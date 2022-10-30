@@ -23,14 +23,14 @@ func login(data map[string]interface{}) error {
 		return err
 	}
 	if login.Username == "" {
-		return errors.New("Username cannot be empty!")
+		return errors.New("username cannot be empty")
 	}
 	if login.Password == "" {
-		return errors.New("Password cannot be empty!")
+		return errors.New("password cannot be empty")
 	}
 	login.XSession = getSession(login.XSession)
 	if login.XSession == "" {
-		return errors.New("Invalid xsession provided!")
+		return errors.New("invalid xsession provided")
 	}
 	go func() {
 		pid, err := pam.Login(login.Username, login.Password, login.XSession)
