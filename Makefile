@@ -12,7 +12,7 @@ build:
 
 install: build
 	install -Dm00755 build/whalefin $(DESTDIR)$(PREFIX)/bin/whalefin
-	install -Dm00644 whalefin.service $(DESTDIR)$(PREFIX)/lib/systemd/system/whalefin.service
+	install -Dm00644 whalefin.service /etc/systemd/system/whalefin.service
 	test ! -f /etc/pam.d/display_manager && install -Dm00644 /etc/pam.d/login /etc/pam.d/display_manager || true
 
 uninstall:
