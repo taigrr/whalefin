@@ -1,6 +1,6 @@
 module github.com/taigrr/whalefin
 
-go 1.26.0
+go 1.26.1
 
 require (
 	github.com/BurntSushi/xgb v0.0.0-20210121224620-deaf085860bc

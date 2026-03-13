@@ -10,7 +10,7 @@ func init() {
 	f = FullScreen{}
 }
 
-// Counter is what we use for counting
+// FullScreen manages the full-screen window state.
 type FullScreen struct {
 	r *wails.Runtime
 }

@@ -1,2 +1,4 @@
 whalefin
 build/
+frontend/bun.lock
+frontend/node_modules/
