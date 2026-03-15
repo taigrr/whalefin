@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -36,7 +35,7 @@ func loadSessions() (list []xsession) {
 	for _, dir := range getXDGDirs() {
 		sessionDir := filepath.Join(dir, "xsessions")
 		// check to see if the directory exists first
-		files, err := ioutil.ReadDir(sessionDir)
+		files, err := os.ReadDir(sessionDir)
 		if err != nil {
 			continue
 		}

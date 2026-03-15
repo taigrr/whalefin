@@ -14,6 +14,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <grp.h>
 #include <pwd.h>
 #include <paths.h>
 #include <unistd.h>
@@ -32,10 +33,10 @@ static pam_handle_t *pam_handle;
 
 static void change_identity (struct passwd *pw) {
     if (initgroups(pw->pw_name, pw->pw_gid) == -1)
-        _Exit();
+        _Exit(EXIT_FAILURE);
     endgrent();
     if (setgid(pw->pw_gid) || setuid(pw->pw_uid))
-        _Exit();
+        _Exit(EXIT_FAILURE);
 }
 
 static int end(int last_result) {
@@ -156,10 +157,11 @@ bool login(const char *username, const char *password, const char *exec, pid_t *
     *child_pid = fork();
     if (*child_pid == 0) {
         change_identity(pw);
-        chdir(pw->pw_dir);
+        if (chdir(pw->pw_dir) == -1)
+            _Exit(EXIT_FAILURE);
         char **env = pam_getenvlist(pam_handle);
         execle(pw->pw_shell, pw->pw_shell, "-c", exec, NULL, env);
-        _Exit();
+        _Exit(EXIT_FAILURE);
     }
     return true;
 }

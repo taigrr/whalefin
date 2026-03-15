@@ -30,7 +30,7 @@ func main() {
 	os.Setenv("XDG_SESSION_TYPE", "x11")
 	if display == "" {
 		sig := make(chan os.Signal, 1)
-		signal.Notify(sig, syscall.SIGTERM) //, syscall,syscall.SIGINT)
+		signal.Notify(sig, syscall.SIGTERM, syscall.SIGINT)
 		go func() {
 			for {
 				<-sig
@@ -42,9 +42,7 @@ func main() {
 		os.Setenv("DISPLAY", ":0")
 	}
 
-	// run blocking wails here
 	width, height := getScreenResolution()
-	//	for {
 	app := wails.CreateApp(&wails.AppConfig{
 		Width:  int(width),
 		Height: int(height),
@@ -57,5 +55,4 @@ func main() {
 	app.Bind(login)
 	app.Run()
 	<-restartWails
-	//}
 }

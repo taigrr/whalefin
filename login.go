@@ -9,7 +9,7 @@ import (
 	"github.com/taigrr/whalefin/pam"
 )
 
-// Counter is what we use for counting
+// Login holds credentials and session info for user authentication.
 type Login struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
