@@ -78,14 +78,14 @@ func parseXSession(path string) (xsession, error) {
 		}
 		// TODO: Load the proper locale-aware Name
 		if strings.HasPrefix(line, "Name=") {
-			name := strings.Split(line, "=")
-			if len(name) == 1 {
+			name := strings.SplitN(line, "=", 2)
+			if len(name) < 2 || name[1] == "" {
 				return data, errors.New("desktop entry name field is empty")
 			}
 			data.Name = name[1]
 		} else if strings.HasPrefix(line, "Exec=") {
-			exec := strings.Split(line, "=")
-			if len(exec) == 1 {
+			exec := strings.SplitN(line, "=", 2)
+			if len(exec) < 2 || exec[1] == "" {
 				return data, errors.New("desktop entry exec field is empty")
 			}
 			data.Exec = exec[1]
