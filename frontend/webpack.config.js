@@ -1,8 +1,8 @@
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-let sourceDir = path.resolve(__dirname, 'src');
-let buildDir = path.resolve(__dirname, 'build');
+const sourceDir = path.resolve(__dirname, 'src');
+const buildDir = path.resolve(__dirname, 'build');
 
 module.exports = {
 	entry: {
@@ -10,17 +10,11 @@ module.exports = {
 	},
 	output: {
 		path: buildDir,
-		filename: 'main.js'
+		filename: 'main.js',
+		clean: true
 	},
 	optimization: {
 		splitChunks: false
-	},
-	devServer: {
-		disableHostCheck: true,
-		contentBase: path.join(__dirname, 'src'),
-		compress: true,
-		open: true,
-		port: 8090
 	},
 	mode: 'production',
 	plugins: [
