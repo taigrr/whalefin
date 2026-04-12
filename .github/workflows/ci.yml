@@ -26,15 +26,13 @@ jobs:
             libx11-dev \
             libxrandr-dev
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
+      - uses: oven-sh/setup-bun@v2
 
       - name: Build frontend
         run: |
           cd frontend
-          npm install
-          npx webpack --mode production
+          bun install
+          bunx webpack --mode production
 
       - name: Build
         run: go build -tags webkit2_41 ./...
