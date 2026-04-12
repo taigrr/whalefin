@@ -1,21 +1,21 @@
 package main
 
 import (
-	_ "embed"
+	"context"
+	"embed"
 	"os"
 	"os/signal"
 	"runtime"
 	"syscall"
 
 	"github.com/taigrr/whalefin/xorg"
-	"github.com/wailsapp/wails"
+	"github.com/wailsapp/wails/v2"
+	"github.com/wailsapp/wails/v2/pkg/options"
+	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 )
 
-//go:embed frontend/build/main.js
-var js string
-
-//go:embed frontend/build/main.css
-var css string
+//go:embed all:frontend/build
+var assets embed.FS
 
 var restartWails chan bool
 
@@ -43,16 +43,28 @@ func main() {
 	}
 
 	width, height := getScreenResolution()
-	app := wails.CreateApp(&wails.AppConfig{
+	loginHandler := NewLoginHandler()
+	fullscreen := GetFullScreen()
+
+	err := wails.Run(&options.App{
+		Title:  "whalefin",
 		Width:  int(width),
 		Height: int(height),
-		Title:  "whalefin",
-		JS:     js,
-		CSS:    css,
-		Colour: "#0547b2",
+		AssetServer: &assetserver.Options{
+			Assets: assets,
+		},
+		BackgroundColour: &options.RGBA{R: 5, G: 71, B: 178, A: 255},
+		OnStartup: func(ctx context.Context) {
+			fullscreen.SetContext(ctx)
+			loginHandler.SetContext(ctx)
+		},
+		Bind: []interface{}{
+			fullscreen,
+			loginHandler,
+		},
 	})
-	app.Bind(GetFullScreen())
-	app.Bind(login)
-	app.Run()
+	if err != nil {
+		panic(err)
+	}
 	<-restartWails
 }
