@@ -59,6 +59,14 @@ Exec=sway
 			content: "[Other]\nName=test\nExec=test\n",
 			wantErr: true,
 		},
+		{
+			name: "exec with equals in value",
+			content: `[Desktop Entry]
+Name=Custom WM
+Exec=/usr/bin/wm --opt=bar --flag=baz
+`,
+			want: xsession{Name: "Custom WM", Exec: "/usr/bin/wm --opt=bar --flag=baz"},
+		},
 	}
 
 	for _, tt := range tests {

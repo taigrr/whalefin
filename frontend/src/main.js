@@ -1,6 +1,6 @@
-import 'core-js/stable';
-const runtime = require('@wailsapp/runtime');
 // Main entry point
+document.addEventListener('DOMContentLoaded', start);
+
 function start() {
 	// Ensure the default app div is 100% wide/high
 	var app = document.getElementById('app');
@@ -30,47 +30,46 @@ function start() {
 	  </form>
 	</div>
 	`;
-	var errorMsg = document.querySelector('.container-modal-content--error')
-	var successMsg = document.querySelector('.container-modal-content--success')
-	var loginForm = document.getElementById('form')
-	var modal = document.querySelector('.container-msg-modal')
-	var modalContent = document.querySelectorAll('.container-modal-content')
+	var loginForm = document.getElementById('form');
 	loginForm.addEventListener('submit', function(event) {
-		event.preventDefault()
-		userLogin()
-	})
-};
-const myLogin = {
-	userName: 'codepen',
-	password: 'codepen'
+		event.preventDefault();
+		userLogin();
+	});
 }
 
 function userLogin() {
-	var userName = document.querySelector('input[name="userName"]')
-	var userPassWord = document.querySelector('input[name="userPassword"]')
+	var userName = document.querySelector('input[name="userName"]');
+	var userPassWord = document.querySelector('input[name="userPassword"]');
 	var nameVal = userName.value,
 		passwordVal = userPassWord.value,
-		xsessionVal = ".xinitrc"
-	window.backend.login({username: nameVal, password:passwordVal, xsession: xsessionVal}).then(result => {
-		console.log(result);
+		xsessionVal = ".xinitrc";
+	// Wails v2: bound struct methods are available at window.go.main.StructName.MethodName
+	window.go.main.LoginHandler.Login(nameVal, passwordVal, xsessionVal).then(function() {
+		console.log("login submitted");
+	}).catch(function(err) {
+		console.error("login error:", err);
+		loginCheck(false);
 	});
 }
 
 function loginCheck(isLogin) {
-	modal.classList.add('enabled')  
+	var modal = document.querySelector('.container-msg-modal');
+	var errorMsg = document.querySelector('.container-modal-content--error');
+	var successMsg = document.querySelector('.container-modal-content--success');
+	var loginForm = document.getElementById('form');
+	var modalContent = document.querySelectorAll('.container-modal-content');
+	modal.classList.add('enabled');
 	if(isLogin) {
-		successMsg.classList.add('enabled')
+		successMsg.classList.add('enabled');
 	} else {
-		errorMsg.classList.add('enabled')
+		errorMsg.classList.add('enabled');
 	}
 
 	setTimeout(function() {
-		modal.classList.remove('enabled')
+		modal.classList.remove('enabled');
 		loginForm.reset();
 		modalContent.forEach(function(content) {
-			content.classList.remove('enabled')
+			content.classList.remove('enabled');
 		});
-	}, 3000)
+	}, 3000);
 }
-// We provide our entrypoint as a callback for runtime.Init
-runtime.Init(start);

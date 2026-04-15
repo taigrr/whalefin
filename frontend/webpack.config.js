@@ -1,9 +1,8 @@
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-let imageSizeLimit = 9007199254740991; // Number.MAX_SAFE_INTEGER
-let sourceDir = path.resolve(__dirname, 'src');
-let buildDir = path.resolve(__dirname, 'build');
+const sourceDir = path.resolve(__dirname, 'src');
+const buildDir = path.resolve(__dirname, 'build');
 
 module.exports = {
 	entry: {
@@ -11,34 +10,13 @@ module.exports = {
 	},
 	output: {
 		path: buildDir,
-		filename: 'main.js'
+		filename: 'main.js',
+		clean: true
 	},
 	optimization: {
 		splitChunks: false
 	},
-	devServer: {
-		disableHostCheck: true,
-		contentBase: path.join(__dirname, 'src'),
-		compress: true,
-		open: true,
-		port: 8090
-	},
 	mode: 'production',
-	module: {
-		rules: [
-			{
-				test: /\.(png|gif|jpg|woff2?|eot|ttf|otf|svg)(\?.*)?$/i,
-				use: [
-					{
-						loader: 'url-loader',
-						options: {
-							limit: imageSizeLimit
-						}
-					}
-				],
-			}
-		]
-	},
 	plugins: [
 		new CopyWebpackPlugin({
 			patterns: [

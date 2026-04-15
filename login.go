@@ -1,59 +1,62 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"os"
 
-	"github.com/mitchellh/mapstructure"
 	"github.com/taigrr/whalefin/pam"
 )
 
-// Login holds credentials and session info for user authentication.
-type Login struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-	XSession string `json:"xsession"`
+// LoginHandler manages user authentication via PAM.
+type LoginHandler struct {
+	ctx context.Context
 }
 
-func login(data map[string]interface{}) error {
-	var login Login
-	err := mapstructure.Decode(data, &login)
-	if err != nil {
-		return err
-	}
-	if login.Username == "" {
+// NewLoginHandler creates a new LoginHandler instance.
+func NewLoginHandler() *LoginHandler {
+	return &LoginHandler{}
+}
+
+// SetContext stores the Wails runtime context.
+func (l *LoginHandler) SetContext(ctx context.Context) {
+	l.ctx = ctx
+}
+
+// Login authenticates a user with the given credentials and starts an X session.
+func (l *LoginHandler) Login(username, password, xsession string) error {
+	if username == "" {
 		return errors.New("username cannot be empty")
 	}
-	if login.Password == "" {
+	if password == "" {
 		return errors.New("password cannot be empty")
 	}
-	login.XSession = getSession(login.XSession)
-	if login.XSession == "" {
+	xsession = getSession(xsession)
+	if xsession == "" {
 		return errors.New("invalid xsession provided")
 	}
 	go func() {
-		pid, err := pam.Login(login.Username, login.Password, login.XSession)
+		pid, err := pam.Login(username, password, xsession)
 		if err != nil {
-			fmt.Printf("Error logging in %s: %v\n", login.Username, err)
+			fmt.Printf("Error logging in %s: %v\n", username, err)
 			return
 		}
 		proc, err := os.FindProcess(pid)
 		if err != nil {
 			fmt.Printf("Error launching login process: %v\n", err)
-			// make sure wails is visible
 			return
 		}
 
-		// hide wails
-		GetFullScreen().r.Window.Close()
-		// xsession has begun, wait for it to exit before taking over
+		// close the wails window; the xsession takes over
+		GetFullScreen().Quit()
+		// wait for the xsession to exit
 		proc.Wait()
 
 		// TODO: check to make sure we don't need to reset the setUID command
 		// to be able to log in as a different user later
 		pam.Logout()
-		// show wails
+		// signal main to exit (systemd will restart the display manager)
 		restartWails <- true
 	}()
 	return nil
