@@ -2,7 +2,13 @@
   "name": "whalefin-frontend",
   "private": true,
   "scripts": {
-    "build": "webpack --mode production"
+    "serve": "NODE_OPTIONS=--openssl-legacy-provider bun x webpack-dev-server",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider bun x webpack --mode production"
+  },
+  "dependencies": {
+    "core-js": "^3.6.4",
+    "regenerator-runtime": "^0.13.3",
+    "@wailsapp/runtime": "^1.0.10"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^12.0.2",
