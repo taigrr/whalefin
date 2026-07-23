@@ -9,10 +9,10 @@
  "binaryname": "whalefin",
  "frontend": {
   "dir": "frontend",
-  "install": "npm install",
-  "build": "npm run build",
+  "install": "bun install",
+  "build": "bun run build",
   "bridge": "src",
-  "serve": "npm run serve"
+  "serve": "bun run serve"
  },
  "tags": "",
  "WailsVersion": "",
