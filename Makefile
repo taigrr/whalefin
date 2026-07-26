@@ -5,10 +5,13 @@ LOCAL != test -d $(DESTDIR)/usr/local && echo -n "/local" || echo -n ""
 LOCAL ?= $(shell test -d $(DESTDIR)/usr/local && echo "/local" || echo "")
 PREFIX ?= /usr$(LOCAL)
 
-.PHONY: build
+.PHONY: build frontend
 
-build:
-	wails build 
+frontend:
+	cd frontend && bun install && bun run build
+
+build: frontend
+	go build -tags desktop -o build/whalefin .
 
 install: build
 	install -Dm00755 build/whalefin $(DESTDIR)$(PREFIX)/bin/whalefin
@@ -21,4 +24,4 @@ uninstall:
 
 embed:
 	DISPLAY=:0 Xephyr :1 -screen 1280x720 &
-	DISPLAY=:1 wails serve
+	DISPLAY=:1 wails3 dev

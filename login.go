@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"os"
@@ -10,18 +9,11 @@ import (
 )
 
 // LoginHandler manages user authentication via PAM.
-type LoginHandler struct {
-	ctx context.Context
-}
+type LoginHandler struct{}
 
 // NewLoginHandler creates a new LoginHandler instance.
 func NewLoginHandler() *LoginHandler {
 	return &LoginHandler{}
-}
-
-// SetContext stores the Wails runtime context.
-func (l *LoginHandler) SetContext(ctx context.Context) {
-	l.ctx = ctx
 }
 
 // Login authenticates a user with the given credentials and starts an X session.

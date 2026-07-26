@@ -8,7 +8,7 @@
   "dependencies": {
     "core-js": "^3.6.4",
     "regenerator-runtime": "^0.13.3",
-    "@wailsapp/runtime": "^1.0.10"
+    "@wailsio/runtime": "^3.0.0-alpha.62"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^12.0.2",

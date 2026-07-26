@@ -3,7 +3,6 @@
 package main
 
 import (
-	"context"
 	"embed"
 	"os"
 	"os/signal"
@@ -11,9 +10,7 @@ import (
 	"syscall"
 
 	"github.com/taigrr/whalefin/xorg"
-	"github.com/wailsapp/wails/v2"
-	"github.com/wailsapp/wails/v2/pkg/options"
-	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
 //go:embed all:frontend/build
@@ -45,26 +42,31 @@ func main() {
 	}
 
 	width, height := getScreenResolution()
-	loginHandler := NewLoginHandler()
 	fullscreen := GetFullScreen()
+	loginHandler := NewLoginHandler()
 
-	err := wails.Run(&options.App{
-		Title:  "whalefin",
-		Width:  int(width),
-		Height: int(height),
-		AssetServer: &assetserver.Options{
-			Assets: assets,
+	app := application.New(application.Options{
+		Name: "whalefin",
+		Services: []application.Service{
+			application.NewService(fullscreen),
+			application.NewService(loginHandler),
 		},
-		BackgroundColour: &options.RGBA{R: 5, G: 71, B: 178, A: 255},
-		OnStartup: func(ctx context.Context) {
-			fullscreen.SetContext(ctx)
-			loginHandler.SetContext(ctx)
-		},
-		Bind: []interface{}{
-			fullscreen,
-			loginHandler,
+		Assets: application.AssetOptions{
+			Handler: application.AssetFileServerFS(assets),
 		},
 	})
+
+	window := app.Window.NewWithOptions(application.WebviewWindowOptions{
+		Title:            "whalefin",
+		Width:            int(width),
+		Height:           int(height),
+		BackgroundColour: application.NewRGB(5, 71, 178),
+	})
+	window.Fullscreen()
+
+	fullscreen.SetApp(app)
+
+	err := app.Run()
 	if err != nil {
 		panic(err)
 	}
