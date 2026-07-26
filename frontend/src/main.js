@@ -1,3 +1,5 @@
+import { Call } from '@wailsio/runtime';
+
 // Main entry point
 document.addEventListener('DOMContentLoaded', start);
 
@@ -43,8 +45,8 @@ function userLogin() {
 	var nameVal = userName.value,
 		passwordVal = userPassWord.value,
 		xsessionVal = ".xinitrc";
-	// Wails v2: bound struct methods are available at window.go.main.StructName.MethodName
-	window.go.main.LoginHandler.Login(nameVal, passwordVal, xsessionVal).then(function() {
+	// Wails v3: invoke bound service methods by their fully qualified name.
+	Call.ByName("main.LoginHandler.Login", nameVal, passwordVal, xsessionVal).then(function() {
 		console.log("login submitted");
 	}).catch(function(err) {
 		console.error("login error:", err);

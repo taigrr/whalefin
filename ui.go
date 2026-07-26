@@ -3,9 +3,7 @@
 package main
 
 import (
-	"context"
-
-	wailsRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
+	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
 var f FullScreen
@@ -16,20 +14,21 @@ func init() {
 
 // FullScreen manages the full-screen window state.
 type FullScreen struct {
-	ctx context.Context
+	app *application.App
 }
 
 func GetFullScreen() *FullScreen {
 	return &f
 }
 
-// SetContext stores the Wails runtime context and applies fullscreen mode.
-func (f *FullScreen) SetContext(ctx context.Context) {
-	f.ctx = ctx
-	wailsRuntime.WindowFullscreen(ctx)
+// SetApp stores a reference to the running Wails application.
+func (f *FullScreen) SetApp(app *application.App) {
+	f.app = app
 }
 
-// Quit closes the Wails application window.
+// Quit closes the Wails application.
 func (f *FullScreen) Quit() {
-	wailsRuntime.Quit(f.ctx)
+	if f.app != nil {
+		f.app.Quit()
+	}
 }
