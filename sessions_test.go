@@ -168,6 +168,27 @@ func TestGetXDGDirs(t *testing.T) {
 			t.Errorf("expected first dir to be /custom/data, got %q", dirs[0])
 		}
 	})
+
+	t.Run("ignores empty XDG_DATA_DIRS entries", func(t *testing.T) {
+		t.Setenv("XDG_DATA_HOME", "/custom/data")
+		t.Setenv("XDG_DATA_DIRS", ":/system/data::/other/data:")
+
+		dirs := getXDGDirs()
+		for _, dir := range dirs {
+			if dir == "" {
+				t.Fatalf("expected empty XDG_DATA_DIRS entries to be ignored: %v", dirs)
+			}
+		}
+		want := []string{"/custom/data", "/system/data", "/other/data"}
+		if len(dirs) != len(want) {
+			t.Fatalf("got %v, want %v", dirs, want)
+		}
+		for index, dir := range dirs {
+			if dir != want[index] {
+				t.Fatalf("got %v, want %v", dirs, want)
+			}
+		}
+	})
 }
 
 func TestLoadSessions(t *testing.T) {
