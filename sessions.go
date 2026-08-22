@@ -129,6 +129,11 @@ func getXDGDirs() (dirs []string) {
 	if dataDirs == "" {
 		dataDirs = "/usr/local/share/:/usr/share/"
 	}
-	dirs = append(dirs, strings.Split(dataDirs, ":")...)
+	for _, dir := range strings.Split(dataDirs, ":") {
+		if dir == "" {
+			continue
+		}
+		dirs = append(dirs, dir)
+	}
 	return
 }
