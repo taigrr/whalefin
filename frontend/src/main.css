@@ -13,6 +13,11 @@ input {
   color: black;
 }
 
+select {
+  background-color: rgb(254,254,254);
+  color: black;
+}
+
 .container {
   display: block;
   width:100%;
