@@ -16,6 +16,11 @@ func NewLoginHandler() *LoginHandler {
 	return &LoginHandler{}
 }
 
+// Sessions returns the available desktop sessions.
+func (l *LoginHandler) Sessions() []xsession {
+	return loadSessions()
+}
+
 // Login authenticates a user with the given credentials and starts an X session.
 func (l *LoginHandler) Login(username, password, xsession string) error {
 	if username == "" {

@@ -27,3 +27,14 @@ func TestLoginInvalidSession(t *testing.T) {
 		t.Error("expected error for invalid session")
 	}
 }
+
+func TestLoginHandlerSessions(t *testing.T) {
+	handler := NewLoginHandler()
+	sessions := handler.Sessions()
+	if len(sessions) == 0 {
+		t.Fatal("expected at least one session")
+	}
+	if sessions[0] != xinitrc {
+		t.Fatalf("expected first session to be xinitrc, got %+v", sessions[0])
+	}
+}
