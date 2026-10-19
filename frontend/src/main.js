@@ -22,16 +22,23 @@ function start() {
 	  <form action="" id="form">
 		<div class="container-form-userName container-form-input">
 		  <label for="userName">User name</label>
-		  <input type="text" placeholder="User Name" name="userName" required>
+		  <input type="text" placeholder="User Name" id="userName" name="userName" required>
 		</div>
 		<div class="container-form-userPassword container-form-input">
-		  <label for="userPasswrod">Password</label>
-		  <input type="password" placeholder="User Password" name="userPassword" onfocus="this.value=''" required>
+		  <label for="userPassword">Password</label>
+		  <input type="password" placeholder="User Password" id="userPassword" name="userPassword" onfocus="this.value=''" required>
+		</div>
+		<div class="container-form-xsession container-form-input">
+		  <label for="xsession">Session</label>
+		  <select id="xsession" name="xsession" required>
+			<option value=".xinitrc">.xinitrc</option>
+		  </select>
 		</div>
 		<button type="submit" class="js-form-btn">Submit</button>
 	  </form>
 	</div>
 	`;
+	loadSessions();
 	var loginForm = document.getElementById('form');
 	loginForm.addEventListener('submit', function(event) {
 		event.preventDefault();
@@ -39,12 +46,31 @@ function start() {
 	});
 }
 
+function loadSessions() {
+	var sessionSelect = document.querySelector('select[name="xsession"]');
+	Call.ByName("main.LoginHandler.Sessions").then(function(sessions) {
+		if(!Array.isArray(sessions) || sessions.length === 0) {
+			return;
+		}
+		var options = sessions.map(function(session) {
+			var option = document.createElement('option');
+			option.value = session.name;
+			option.textContent = session.name;
+			return option;
+		});
+		sessionSelect.replaceChildren.apply(sessionSelect, options);
+	}).catch(function(err) {
+		console.error("session load error:", err);
+	});
+}
+
 function userLogin() {
 	var userName = document.querySelector('input[name="userName"]');
 	var userPassWord = document.querySelector('input[name="userPassword"]');
+	var xsession = document.querySelector('select[name="xsession"]');
 	var nameVal = userName.value,
 		passwordVal = userPassWord.value,
-		xsessionVal = ".xinitrc";
+		xsessionVal = xsession.value;
 	// Wails v3: invoke bound service methods by their fully qualified name.
 	Call.ByName("main.LoginHandler.Login", nameVal, passwordVal, xsessionVal).then(function() {
 		console.log("login submitted");
