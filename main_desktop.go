@@ -4,6 +4,7 @@ package main
 
 import (
 	"embed"
+	"log"
 	"os"
 	"os/signal"
 	"runtime"
@@ -33,11 +34,21 @@ func main() {
 		go func() {
 			for {
 				<-sig
-				xorg.StopX(xPID)
+				if err := xorg.StopX(xPID); err != nil {
+					log.Printf("Could not stop X server: %v\n", err)
+				}
 			}
 		}()
-		xPID = xorg.StartX()
-		defer xorg.StopX(xPID)
+		var err error
+		xPID, err = xorg.StartX()
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer func() {
+			if err := xorg.StopX(xPID); err != nil {
+				log.Printf("Could not stop X server: %v\n", err)
+			}
+		}()
 		os.Setenv("DISPLAY", ":0")
 	}
 
