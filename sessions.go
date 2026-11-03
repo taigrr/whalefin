@@ -40,6 +40,9 @@ func loadSessions() (list []xsession) {
 			continue
 		}
 		for _, file := range files {
+			if file.IsDir() || filepath.Ext(file.Name()) != ".desktop" {
+				continue
+			}
 			desktopFile := filepath.Join(sessionDir, file.Name())
 			session, err := parseXSession(desktopFile)
 			if err != nil {

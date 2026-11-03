@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"path/filepath"
+	"reflect"
 	"testing"
 )
 
@@ -245,5 +246,32 @@ Type=Application
 	}
 	if !found {
 		t.Errorf("expected to find TestWM session, got: %+v", sessions)
+	}
+}
+
+func TestLoadSessionsIgnoresNonDesktopEntries(t *testing.T) {
+	dataDir := t.TempDir()
+	sessionDir := filepath.Join(dataDir, "xsessions")
+	if err := os.MkdirAll(sessionDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+	t.Setenv("XDG_DATA_HOME", dataDir)
+	t.Setenv("XDG_DATA_DIRS", t.TempDir())
+	for _, name := range []string{"valid.desktop", "backup.desktop.bak", "notes", "disabled.desktop~"} {
+		content := "[Desktop Entry]\nName=" + name + "\nExec=testwm\n"
+		if err := os.WriteFile(filepath.Join(sessionDir, name), []byte(content), 0644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := os.Mkdir(filepath.Join(sessionDir, "directory.desktop"), 0755); err != nil {
+		t.Fatal(err)
+	}
+	// A malformed desktop file must not prevent later valid entries from loading.
+	if err := os.WriteFile(filepath.Join(sessionDir, "broken.desktop"), []byte("[Desktop Entry]\nName=broken\n"), 0644); err != nil {
+		t.Fatal(err)
+	}
+	want := []xsession{xinitrc, {Name: "valid.desktop", Exec: "testwm"}}
+	if got := loadSessions(); !reflect.DeepEqual(got, want) {
+		t.Fatalf("got %+v, want %+v", got, want)
 	}
 }
