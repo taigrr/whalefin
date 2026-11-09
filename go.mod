@@ -2,6 +2,8 @@ module github.com/taigrr/whalefin
 
 go 1.27.2
 
+toolchain go1.27.3
+
 require (
 	github.com/BurntSushi/xgb v0.0.0-20210121224620-deaf085860bc
 	github.com/BurntSushi/xgbutil v0.0.0-20190907113008-ad855c713046
