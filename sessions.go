@@ -121,11 +121,11 @@ func getXDGDirs() (dirs []string) {
 	dataHome := os.Getenv("XDG_DATA_HOME")
 	if dataHome == "" {
 		home, err := os.UserHomeDir()
-		if err == nil {
+		if err == nil && filepath.IsAbs(home) {
 			dataHome = filepath.Join(home, ".local/share")
 			dirs = []string{dataHome}
 		}
-	} else {
+	} else if filepath.IsAbs(dataHome) {
 		dirs = []string{dataHome}
 	}
 	dataDirs := os.Getenv("XDG_DATA_DIRS")
@@ -133,7 +133,7 @@ func getXDGDirs() (dirs []string) {
 		dataDirs = "/usr/local/share/:/usr/share/"
 	}
 	for _, dir := range strings.Split(dataDirs, ":") {
-		if dir == "" {
+		if !filepath.IsAbs(dir) {
 			continue
 		}
 		dirs = append(dirs, dir)

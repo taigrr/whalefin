@@ -29,6 +29,10 @@ application (with `make run .`) or by running it within a Xephyr window
 (requires Xephyr installed) by running `make embed`.
 
 
+Session discovery searches `xsessions` under absolute `XDG_DATA_HOME` and
+`XDG_DATA_DIRS` paths. Relative paths are ignored, as required by the
+[XDG Base Directory Specification](https://specifications.freedesktop.org/basedir/latest/).
+
 # Troubleshooting
 
 ## Logging in Fails

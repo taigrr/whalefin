@@ -275,3 +275,33 @@ func TestLoadSessionsIgnoresNonDesktopEntries(t *testing.T) {
 		t.Fatalf("got %+v, want %+v", got, want)
 	}
 }
+
+func TestGetXDGDirsIgnoresRelativePaths(t *testing.T) {
+	for _, dataHome := range []string{"relative/data", ".", "../data"} {
+		t.Run(dataHome, func(t *testing.T) {
+			t.Setenv("XDG_DATA_HOME", dataHome)
+			t.Setenv("XDG_DATA_DIRS", "relative:/system/data:.:../other:/other/data")
+			want := []string{"/system/data", "/other/data"}
+			if got := getXDGDirs(); !reflect.DeepEqual(got, want) {
+				t.Fatalf("got %v, want %v", got, want)
+			}
+		})
+	}
+}
+
+func TestLoadSessionsIgnoresRelativeDataDirs(t *testing.T) {
+	workingDir := t.TempDir()
+	t.Chdir(workingDir)
+	sessionDir := filepath.Join(workingDir, "xsessions")
+	if err := os.Mkdir(sessionDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(sessionDir, "local.desktop"), []byte("[Desktop Entry]\nName=Local\nExec=local-wm\n"), 0644); err != nil {
+		t.Fatal(err)
+	}
+	t.Setenv("XDG_DATA_HOME", ".")
+	t.Setenv("XDG_DATA_DIRS", ".")
+	if got := loadSessions(); !reflect.DeepEqual(got, []xsession{xinitrc}) {
+		t.Fatalf("loaded sessions from working directory: %+v", got)
+	}
+}
